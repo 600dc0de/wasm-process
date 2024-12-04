@@ -7,7 +7,7 @@ WASM process позволяет управлять wasm модулями как 
 - код возврата
 - встроенные модули для интерпретаторов PHP и Python
 
-[DEMO](DEMO)
+[DEMO](https://600dc0de.github.io/wasm-process/)
     
 ### Установка
 
