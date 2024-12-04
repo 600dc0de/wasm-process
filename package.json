@@ -1,0 +1,25 @@
+{
+  "name": "wasm-pm",
+  "version": "1.0.0",
+  "private": false,
+  "author": "pilot114",
+  "license": "MIT",
+  "homepage": "?",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "rm -Rf docs && vue-cli-service build && cp -r dist docs",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "php-wasm": "^0.0.8"
+  },
+  "devDependencies": {
+    "codejar": "^4.2.0",
+    "shiki": "^1.24.0",
+
+    "vue": "^3.2.13",
+    "core-js": "^3.8.3",
+    "modern-normalize": "^3.0.1",
+    "@vue/cli-service": "~5.0.0"
+  }
+}
