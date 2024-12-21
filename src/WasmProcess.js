@@ -1,6 +1,6 @@
-import { PythonProcess } from "@/PythonProcess";
-import { GolangProcess } from "@/GolangProcess";
-import { PhpProcess } from "@/PhpProcess";
+import { PythonProcess } from "@/modules/python/PythonProcess";
+import { GolangProcess } from "@/modules/golang/GolangProcess";
+import { PhpProcess } from "@/modules/php/PhpProcess";
 
 // polyfill
 if (!WebAssembly.instantiateStreaming) {

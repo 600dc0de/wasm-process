@@ -1,6 +1,6 @@
 class PythonProcess {
     constructor() {
-        this.worker = new Worker(new URL('@/PythonWorker.js', import.meta.url), { type: 'module' })
+        this.worker = new Worker(new URL('@/modules/python/PythonWorker.js', import.meta.url), { type: 'module' })
 
         // route messages and errors to callbacks
         this.worker.onmessage = (event) => {

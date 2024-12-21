@@ -48,10 +48,7 @@
           <ContentTab name="args & envs" label="args & envs">
             <input v-model="args" type="text">
             <br>
-            <input v-model="envs" type="text">
-          </ContentTab>
-          <ContentTab name="stdin" label="stdin">
-            <textarea v-model="stdin" type="text" rows="10"></textarea>
+            <textarea v-model="envs" type="text"></textarea>
           </ContentTab>
           <ContentTab name="stdout" label="stdout">
             <pre>{{ stdout }}</pre>
@@ -94,7 +91,7 @@ export default {
       sources: sources,
 
       args: 'qwe asd zxc',
-      envs: '{"test": 123}',
+      envs: 'TEST=123\nTEST2=456',
       stdin: '',
       stdout: '',
       stderr: '',
@@ -149,12 +146,20 @@ export default {
       this.result = '';
       this.stdout = '';
       this.stderr = '';
+
       if (this.wrapper) {
         this.isLoading = true;
+
+        let envsJson = {};
+        this.envs.split('\n').forEach(line => {
+          let [key, value] = line.split('=');
+          envsJson[key] = value;
+        });
+
         this.wrapper.sendCode(
             this.currentCode,
             this.currentCodeName,
-            JSON.parse(this.envs),
+            envsJson,
             this.args.split(' '),
         );
       }

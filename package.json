@@ -4,7 +4,7 @@
   "private": false,
   "author": "pilot114",
   "license": "MIT",
-  "homepage": "?",
+  "homepage": "https://600dc0de.github.io/wasm-process/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "rm -Rf docs && vue-cli-service build && cp -r dist docs",
@@ -14,12 +14,11 @@
     "php-wasm": "^0.0.8"
   },
   "devDependencies": {
-    "codejar": "^4.2.0",
-    "shiki": "^1.24.0",
-
-    "vue": "^3.2.13",
-    "core-js": "^3.8.3",
-    "modern-normalize": "^3.0.1",
-    "@vue/cli-service": "~5.0.0"
+    "@vue/cli-service": "~5.0",
+    "codejar": "^4.2",
+    "core-js": "^3.39",
+    "modern-normalize": "^3.0",
+    "shiki": "^1.24",
+    "vue": "^3.5"
   }
 }

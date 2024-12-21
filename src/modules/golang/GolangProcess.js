@@ -1,4 +1,4 @@
-import "@/wasm_exec.js";
+import "@/modules/golang/wasm_exec.js";
 
 class GolangProcess {
     constructor() {
@@ -8,8 +8,8 @@ class GolangProcess {
         const decoder = new TextDecoder("utf-8");
         const self = this;
 
-        let outputBuf = '';
-        let errorBuf = '';
+        self.outputBuf = '';
+        self.errorBuf = '';
 
         global.fs.read = function(fd, buffer, offset, length, position, callback) {
 
@@ -18,7 +18,7 @@ class GolangProcess {
                 return;
             }
 
-            const input = prompt("Введите данные для программы:");
+            const input = prompt("STDIN:");
 
             if (input === null) {
                 callback(null, 0);
@@ -35,12 +35,12 @@ class GolangProcess {
 
         global.fs.writeSync = function(fd, buf) {
             if (fd === 1) {
-                outputBuf += decoder.decode(buf);
-                self.onOutput(outputBuf);
+                self.outputBuf += decoder.decode(buf);
+                self.onOutput(self.outputBuf);
             }
             if (fd === 2) {
-                errorBuf += decoder.decode(buf);
-                self.onError(errorBuf);
+                self.errorBuf += decoder.decode(buf);
+                self.onError(self.errorBuf);
             }
             return buf.length;
         };
@@ -50,6 +50,9 @@ class GolangProcess {
         this.go.exit = this.onResult;
         this.go.env = env;
         this.go.argv = args;
+
+        this.outputBuf = '';
+        this.errorBuf = '';
 
         let result = await WebAssembly.instantiateStreaming(fetch("go/" + name + ".wasm"), this.go.importObject)
         this.go.run(result.instance).catch((err) => {
