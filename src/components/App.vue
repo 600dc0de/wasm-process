@@ -51,7 +51,10 @@
             <textarea v-model="envs" type="text"></textarea>
           </ContentTab>
           <ContentTab name="stdout" label="stdout">
-            <pre>{{ stdout }}</pre>
+            <template v-if="isHTML(stdout)">
+              <div v-html="stdout"></div>
+            </template>
+            <pre v-else>{{ stdout }}</pre>
           </ContentTab>
           <ContentTab name="stderr" label="stderr">
             <pre>{{ stderr }}</pre>
@@ -85,7 +88,7 @@ export default {
   data() {
     return {
       languages: languages,
-      currentLanguage: languages[2],
+      currentLanguage: languages[1],
       currentCode: '',
       currentCodeName: '',
       sources: sources,
@@ -113,6 +116,11 @@ export default {
   },
 
   methods: {
+    isHTML(str) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(str, "text/html");
+      return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+    },
     selectCurrentCode(codeName) {
       this.currentCodeName = codeName;
       this.currentCode = this.sources[this.currentLanguage.name][codeName];
