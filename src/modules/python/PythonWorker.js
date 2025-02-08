@@ -8,8 +8,6 @@ function postMessageAndWait(worker, message) {
             resolve(event.data);
         }
         worker.addEventListener("message", handleResponse);
-        console.log(message)
-        // debugger
         worker.postMessage(message);
     });
 }

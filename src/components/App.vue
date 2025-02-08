@@ -4,7 +4,7 @@
 
       <div class="column">
         <div
-            v-for="(code, name) in sources[currentLanguage.name]"
+            v-for="(code, name) in sources[languages[0].name]"
             :key="name"
         >
           <a
@@ -14,11 +14,10 @@
           </a>
         </div>
       </div>
-
-      <div class="column">
+      <div class="column" v-for="(runner) in runners">
         <div class="language-container">
-          <img :src="currentLanguage.logo" width="20" height="20">
-          <select v-model="currentLanguage">
+          <img :src="runner.language.logo" width="20" height="20">
+          <select v-model="runner.language">
             <option v-for="language in languages" :key="language.name" :value="language">
               {{ language.name }}
             </option>
@@ -26,26 +25,9 @@
         </div>
 
         <WasmRunner
-            v-if="currentCodeName"
-          :language="currentLanguage"
-          :code-name="currentCodeName"
-        />
-      </div>
-
-      <div class="column">
-        <div class="language-container">
-          <img :src="currentLanguage2.logo" width="20" height="20">
-          <select v-model="currentLanguage2">
-            <option v-for="language in languages" :key="language.name" :value="language">
-              {{ language.name }}
-            </option>
-          </select>
-        </div>
-
-        <WasmRunner
-            v-if="currentCodeName2"
-            :language="currentLanguage2"
-            :code-name="currentCodeName2"
+            v-if="runner.codeName"
+            :language="runner.language"
+            :code-name="runner.codeName"
         />
       </div>
     </div>
@@ -53,42 +35,43 @@
 </template>
 
 <script>
-import CodeEditor from "@/components/CodeEditor.vue";
-import ContentTab from "@/components/ContentTab.vue";
-import ContentTabs from "@/components/ContentTabs.vue";
-import WasmRunner from "@/components/WasmRunner.vue";
-import sources from "@/sources/sources.json";
+  import CodeEditor from "@/components/CodeEditor.vue";
+  import ContentTab from "@/components/ContentTab.vue";
+  import ContentTabs from "@/components/ContentTabs.vue";
+  import WasmRunner from "@/components/WasmRunner.vue";
+  import sources from "@/sources/sources.json";
 
-import {Langs} from "@/WasmProcess";
+  import {Langs} from "@/WasmProcess";
 
-const languages = [
-  {name: Langs.PYTHON, logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg', isSupported: true, isReadonly: false},
-  {name: Langs.PHP, logo: 'https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg', isSupported: true, isReadonly: false},
-  {name: Langs.GO, logo: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg', isSupported: true, isReadonly: true},
-];
+  const languages = [
+    {name: Langs.PYTHON, logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg', isSupported: true, isReadonly: false},
+    {name: Langs.PHP, logo: 'https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg', isSupported: true, isReadonly: false},
+    {name: Langs.GO, logo: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg', isSupported: true, isReadonly: true},
+  ];
 
-export default {
-  name: 'CodeExecutor',
-  components: {ContentTab, ContentTabs, CodeEditor, WasmRunner},
-  data() {
-    return {
-      languages: languages,
-      sources: sources,
+  export default {
+    name: 'CodeExecutor',
+    components: {ContentTab, ContentTabs, CodeEditor, WasmRunner},
+    data() {
+      return {
+        languages: languages,
+        sources: sources,
 
-      currentLanguage: languages[2],
-      currentCodeName: Object.keys(sources[languages[2].name])[0],
-
-      currentLanguage2: languages[2],
-      currentCodeName2: Object.keys(sources[languages[2].name])[0],
-    };
-  },
-  methods: {
-    selectCurrentCode(codeName) {
-      this.currentCodeName = codeName;
-      this.currentCodeName2 = codeName;
+        runners: [
+          { language: languages[0], codeName: Object.keys(sources[languages[0].name])[0]},
+          { language: languages[1], codeName: Object.keys(sources[languages[1].name])[0]},
+          { language: languages[2], codeName: Object.keys(sources[languages[2].name])[0]},
+        ],
+      };
     },
-  },
-};
+    methods: {
+      selectCurrentCode(codeName) {
+        this.runners.forEach((item) => {
+          item.codeName = codeName;
+        });
+      },
+    },
+  };
 </script>
 
 <style>
