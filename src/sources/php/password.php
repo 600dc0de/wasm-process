@@ -1,6 +1,7 @@
 <?php
 
-function generatePassword($length = 8) {
+function generatePassword(int $length = 8): string
+{
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
     $password = '';
     for ($i = 0; $i < $length; $i++) {

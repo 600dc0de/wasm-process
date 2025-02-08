@@ -9,13 +9,15 @@ import { createHighlighter } from 'shiki'
 
 const highlighter = await createHighlighter({
   themes: [
-    'one-dark-pro', 'light-plus', 'none',
+    'one-dark-pro', 'light-plus', 'none', 'github-dark',
   ],
   langs: ['javascript', 'python', 'php', 'go'],
 })
 
+const THEME = 'light-plus';
+
 // fix bg
-let theme = highlighter.getTheme('light-plus');
+let theme = highlighter.getTheme(THEME);
 theme.bg = '#f5f5f5'
 highlighter.setTheme(theme)
 
@@ -59,7 +61,7 @@ export default {
     const highlightSyntax = async (editor) => {
       editor.innerHTML = highlighter.codeToHtml(editor.textContent, {
         lang: props.language,
-        theme: 'light-plus'
+        theme: THEME
       })
     };
 

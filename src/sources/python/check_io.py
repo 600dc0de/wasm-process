@@ -18,8 +18,8 @@ def main():
     sys.stdout.write("stdout message!\n")
     sys.stderr.write("stderr message!\n")
 
-    code = 42 if len(sys.argv) > 1 else 0
-    sys.exit(code)
+    #code = 42 if len(sys.argv) > 1 else 0
+    #sys.exit(code)
 
 if __name__ == "__main__":
     main()

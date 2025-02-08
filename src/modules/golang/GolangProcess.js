@@ -6,10 +6,10 @@ class GolangProcess {
         this.go = new Go();
 
         const decoder = new TextDecoder("utf-8");
-        const self = this;
+        const inst = this;
 
-        self.outputBuf = '';
-        self.errorBuf = '';
+        inst.outputBuf = '';
+        inst.errorBuf = '';
 
         global.fs.read = function(fd, buffer, offset, length, position, callback) {
 
@@ -35,12 +35,12 @@ class GolangProcess {
 
         global.fs.writeSync = function(fd, buf) {
             if (fd === 1) {
-                self.outputBuf += decoder.decode(buf);
-                self.onOutput(self.outputBuf);
+                inst.outputBuf += decoder.decode(buf);
+                inst.onOutput(inst.outputBuf);
             }
             if (fd === 2) {
-                self.errorBuf += decoder.decode(buf);
-                self.onError(self.errorBuf);
+                inst.errorBuf += decoder.decode(buf);
+                inst.onError(inst.errorBuf);
             }
             return buf.length;
         };

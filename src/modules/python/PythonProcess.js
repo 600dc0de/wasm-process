@@ -2,7 +2,6 @@ class PythonProcess {
     constructor() {
         this.worker = new Worker(new URL('@/modules/python/PythonWorker.js', import.meta.url), { type: 'module' })
 
-        // route messages and errors to callbacks
         this.worker.onmessage = (event) => {
             const { type, result, error } = event.data;
 
@@ -12,15 +11,14 @@ class PythonProcess {
             if (type === 'stdout') {
                 this.onOutput(result);
             }
+            if (type === 'stdin') {
+                let input = prompt("STDIN:");
+                this.worker.postMessage({ type: "stdin", result: input });
+            }
             if (type === 'result') {
                 this.onResult(result);
             }
         };
-    }
-
-    sendInput(input) {
-        // TODO
-        console.log('python input: ' + input)
     }
 
     sendCode(code) {

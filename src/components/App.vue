@@ -1,21 +1,6 @@
 <template>
   <div id="app">
     <div class="columns">
-      <div class="column">
-        <div
-            v-for="language in languages"
-            :key="language.name"
-            class="language-container"
-        >
-          <img :src="language.logo" width="20" height="20">
-          <a
-              v-if="language.isSupported"
-              href="#" @click="selectLanguage(language)"
-          >
-            {{ language.name }}
-          </a>
-        </div>
-      </div>
 
       <div class="column">
         <div
@@ -31,50 +16,50 @@
       </div>
 
       <div class="column">
-        <CodeEditor
-            v-model="currentCode"
-            :language="currentLanguage.name"
-            :readonly="currentLanguage.isReadonly"
+        <div class="language-container">
+          <img :src="currentLanguage.logo" width="20" height="20">
+          <select v-model="currentLanguage">
+            <option v-for="language in languages" :key="language.name" :value="language">
+              {{ language.name }}
+            </option>
+          </select>
+        </div>
+
+        <WasmRunner
+            v-if="currentCodeName"
+          :language="currentLanguage"
+          :code-name="currentCodeName"
         />
       </div>
 
       <div class="column">
-        <button @click="runCode">Выполнить</button>
-        <span class="loader" v-if="isLoading"></span>
-      </div>
+        <div class="language-container">
+          <img :src="currentLanguage2.logo" width="20" height="20">
+          <select v-model="currentLanguage2">
+            <option v-for="language in languages" :key="language.name" :value="language">
+              {{ language.name }}
+            </option>
+          </select>
+        </div>
 
-      <div class="column">
-        <ContentTabs activeTab="stdout">
-          <ContentTab name="args & envs" label="args & envs">
-            <input v-model="args" type="text">
-            <br>
-            <textarea v-model="envs" type="text"></textarea>
-          </ContentTab>
-          <ContentTab name="stdout" label="stdout">
-            <template v-if="isHTML(stdout)">
-              <div v-html="stdout"></div>
-            </template>
-            <pre v-else>{{ stdout }}</pre>
-          </ContentTab>
-          <ContentTab name="stderr" label="stderr">
-            <pre>{{ stderr }}</pre>
-          </ContentTab>
-          <ContentTab name="result" label="result">
-            <pre>{{ result }}</pre>
-          </ContentTab>
-        </ContentTabs>
+        <WasmRunner
+            v-if="currentCodeName2"
+            :language="currentLanguage2"
+            :code-name="currentCodeName2"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import ContentTabs from "@/components/ContentTabs.vue";
-import ContentTab from "@/components/ContentTab.vue";
 import CodeEditor from "@/components/CodeEditor.vue";
+import ContentTab from "@/components/ContentTab.vue";
+import ContentTabs from "@/components/ContentTabs.vue";
+import WasmRunner from "@/components/WasmRunner.vue";
 import sources from "@/sources/sources.json";
 
-import {WasmProcess, Langs} from "@/WasmProcess";
+import {Langs} from "@/WasmProcess";
 
 const languages = [
   {name: Langs.PYTHON, logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg', isSupported: true, isReadonly: false},
@@ -84,93 +69,23 @@ const languages = [
 
 export default {
   name: 'CodeExecutor',
-  components: {ContentTab, ContentTabs, CodeEditor},
+  components: {ContentTab, ContentTabs, CodeEditor, WasmRunner},
   data() {
     return {
       languages: languages,
-      currentLanguage: languages[1],
-      currentCode: '',
-      currentCodeName: '',
       sources: sources,
 
-      args: 'qwe asd zxc',
-      envs: 'TEST=123\nTEST2=456',
-      stdin: '',
-      stdout: '',
-      stderr: '',
-      result: '',
+      currentLanguage: languages[2],
+      currentCodeName: Object.keys(sources[languages[2].name])[0],
 
-      wrapper: null,
-      isLoading: false,
+      currentLanguage2: languages[2],
+      currentCodeName2: Object.keys(sources[languages[2].name])[0],
     };
   },
-  mounted() {
-    this.initWrapper();
-    this.autoSelectCode();
-    this.selectCurrentCode('check_io');
-  },
-  beforeUnmount() {
-    if (this.wrapper) {
-      this.wrapper.terminate();
-    }
-  },
-
   methods: {
-    isHTML(str) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(str, "text/html");
-      return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
-    },
     selectCurrentCode(codeName) {
       this.currentCodeName = codeName;
-      this.currentCode = this.sources[this.currentLanguage.name][codeName];
-    },
-    selectLanguage(language) {
-      this.currentLanguage = language;
-      this.initWrapper();
-      this.autoSelectCode();
-    },
-    initWrapper() {
-      this.wrapper = new WasmProcess(this.currentLanguage.name);
-
-      this.wrapper.onOutput((out) => {
-        this.stdout = out;
-      });
-
-      this.wrapper.onError((error) => {
-        this.stderr = error;
-      });
-
-      this.wrapper.onResult((result) => {
-        this.result = result;
-        this.isLoading = false;
-      });
-    },
-    autoSelectCode() {
-      this.currentCodeName = Object.keys(this.sources[this.currentLanguage.name])[0];
-      this.currentCode = Object.values(this.sources[this.currentLanguage.name])[0];
-    },
-    runCode() {
-      this.result = '';
-      this.stdout = '';
-      this.stderr = '';
-
-      if (this.wrapper) {
-        this.isLoading = true;
-
-        let envsJson = {};
-        this.envs.split('\n').forEach(line => {
-          let [key, value] = line.split('=');
-          envsJson[key] = value;
-        });
-
-        this.wrapper.sendCode(
-            this.currentCode,
-            this.currentCodeName,
-            envsJson,
-            this.args.split(' '),
-        );
-      }
+      this.currentCodeName2 = codeName;
     },
   },
 };
@@ -190,12 +105,6 @@ export default {
   width: 200px;
 }
 
-pre {
-  margin: 0;
-  padding: 0;
-  font-family: 'Calibri', sans-serif;
-}
-
 .columns {
   display: flex;
   justify-content: start;
@@ -204,42 +113,6 @@ pre {
 
 .column {
   flex: 1;
-}
-
-pre {
-  background-color: #f5f5f5;
-  padding: 1em;
-}
-
-.loader {
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-  border: 4px solid rgba(0, 0, 0, 0.2);
-  border-top-color: rgba(0, 0, 0, 0.8);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
-  margin-left: 5px;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-textarea, input {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  width: 400px;
-  padding: .5em;
-  margin-bottom: 1em;
-
-  outline: none;
-  white-space: pre;
-  background-color: #f5f5f5;
 }
 
 .language-container {
