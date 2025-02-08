@@ -8,11 +8,11 @@ class GolangProcess {
         const decoder = new TextDecoder("utf-8");
         const inst = this;
 
-        inst.outputBuf = '';
-        inst.errorBuf = '';
+        // Instance-specific output and error buffers
+        this.outputBuf = '';
+        this.errorBuf = '';
 
         global.fs.read = function(fd, buffer, offset, length, position, callback) {
-
             if (fd !== 0) {
                 callback(null, 0);
                 return;
