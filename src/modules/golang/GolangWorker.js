@@ -10,20 +10,19 @@ let init = (async () => {
     self.outputBuf = '';
     self.errorBuf = '';
 
-    global.fs.read = function(fd, buffer, offset, length, position, callback) {
+    global.fs.read = async function(fd, buffer, offset, length, position, callback) {
         if (fd !== 0) {
             callback(null, 0);
             return;
         }
+        self.postMessage({ type: 'stdin' });
 
-        const input = prompt("STDIN:");
+        Atomics.wait(self.controlArray, 1, 0);
 
-        if (input === null) {
-            callback(null, 0);
-            return;
-        }
+        const bufLen = Atomics.load(self.controlArray, 0);
+        const bytes = self.sharedArray.slice(0, bufLen);
+        Atomics.store(self.controlArray, 1, 0);
 
-        const bytes = new TextEncoder().encode(input);
         const toRead = Math.min(length, bytes.length - position);
         for (let i = 0; i < toRead; i++) {
             buffer[offset + i] = bytes[position + i];
@@ -53,6 +52,10 @@ self.onmessage = async (event) => {
 
     self.go.env = event.data.env;
     self.go.argv = event.data.args;
+
+    self.inputBuffer = event.data.inputBuffer;
+    self.sharedArray = new Uint8Array(self.inputBuffer);
+    self.controlArray = new Int32Array(self.inputBuffer, self.inputBuffer.byteLength - 8, 2);
 
     self.outputBuf = '';
     self.errorBuf = '';

@@ -18,12 +18,12 @@ foreach ($_ENV as $key => $value) {
 }
 
 $stdinContent = fread($stdIn, 1024);
-if ($stdinContent !== false && $stdinContent !== '') {
+if ($stdinContent) {
     fwrite($stdOut, "from stdin: " . $stdinContent . PHP_EOL);
 }
 
-fwrite($stdOut, "stdout message!" . PHP_EOL);
-fwrite($stdErr, "stderr message!" . PHP_EOL);
+fwrite($stdOut, "stdout message!\n");
+fwrite($stdErr, "stderr message!\n");
 
 $exitCode = (count($argv) > 1) ? 42 : 0;
 exit($exitCode);

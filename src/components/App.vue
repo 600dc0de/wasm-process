@@ -16,7 +16,7 @@
       </div>
       <div class="column" v-for="(runner) in runners">
         <div class="language-container">
-          <img :src="runner.language.logo" width="20" height="20">
+          <img :src="require(`@/assets/logo/${runner.language.logo}`)" width="20" height="20">
           <select v-model="runner.language">
             <option v-for="language in languages" :key="language.name" :value="language">
               {{ language.name }}
@@ -44,9 +44,9 @@
   import {Langs} from "@/WasmProcess";
 
   const languages = [
-    {name: Langs.PYTHON, logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg', isSupported: true, isReadonly: false},
-    {name: Langs.PHP, logo: 'https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg', isSupported: true, isReadonly: false},
-    {name: Langs.GO, logo: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg', isSupported: true, isReadonly: true},
+    {name: Langs.PYTHON, logo: 'python.svg', isSupported: true, isReadonly: false},
+    {name: Langs.PHP, logo: 'php.svg', isSupported: true, isReadonly: false},
+    {name: Langs.GO, logo: 'go.svg', isSupported: true, isReadonly: true},
   ];
 
   export default {
@@ -58,9 +58,9 @@
         sources: sources,
 
         runners: [
-          { language: languages[0], codeName: Object.keys(sources[languages[0].name])[0]},
-          { language: languages[1], codeName: Object.keys(sources[languages[1].name])[0]},
-          { language: languages[2], codeName: Object.keys(sources[languages[2].name])[0]},
+          { language: languages[0], codeName: Object.keys(sources[languages[0].name])[1]},
+          { language: languages[1], codeName: Object.keys(sources[languages[1].name])[1]},
+          { language: languages[2], codeName: Object.keys(sources[languages[2].name])[1]},
         ],
       };
     },
@@ -75,6 +75,11 @@
 </script>
 
 <style>
+@font-face {
+  font-family: "Calibri";
+  src: url("@/assets/calibri.woff") format("woff");
+}
+
 * {
   font-family: 'Calibri', sans-serif;
   font-size: 16px;

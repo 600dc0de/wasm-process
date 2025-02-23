@@ -45,12 +45,18 @@ WASM process позволяет управлять wasm модулями как 
 Для php используется [php-wasm](https://php-wasm.seanmorr.is/)  
 Для python используется [pydiode](https://pyodide.org/en/stable/)  
 
+### Аналоги
+
+https://livecodes.io/docs/  
+https://wasmer.io/  
+
 ### Roadmap
 
 - virtual file system
 - работа с id процессов
 - networking
 - управление модулями для интерпретаторов
+- управление зависимостями
 - performance debug tools
 - лог запусков
 - параллельное выполнение
