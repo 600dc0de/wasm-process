@@ -7,7 +7,9 @@ WASM process позволяет управлять wasm модулями как 
 - код возврата
 - встроенные модули для PHP, Python, Golang
 
-[DEMO](https://600dc0de.github.io/wasm-process/)
+### DEMO
+
+    yarn install && yarn serve
     
 ### Установка
 
